@@ -1,10 +1,18 @@
-import { ContactListItem } from 'components/ContactListItem/ContactListItem';
+import { ContactListItem } from '../ContactListItem/ContactListItem';
 import { List } from './ContactList.styled';
-import { useSelector } from 'react-redux';
-import { getContacts, getFilter } from 'redux/ContactSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContactsThunk } from 'redux/contacts/contacts-requests';
+import { getContacts, getFilter } from 'redux/contacts/contacts-selectors';
+
 export default function ContactList() {
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getContactsThunk());
+  }, [dispatch]);
 
   const getFilteredContacts = () => {
     return contacts.filter(contact =>
@@ -18,7 +26,7 @@ export default function ContactList() {
         return (
           <ContactListItem
             key={id}
-            id={id}
+            contactId={id}
             name={name}
             number={number}
           ></ContactListItem>

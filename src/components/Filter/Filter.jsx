@@ -1,13 +1,14 @@
-import { FilterContainer, Label, Span } from './Filter.styled';
-import { Input } from 'components/ContactForm/ContactForm.styled';
-import { getFilter, changeFilter } from 'redux/ContactSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { filterContact } from 'redux/contacts/contacts-slice';
+import { FilterContainer, Input, Span, Label } from './Filter.styled';
+import { getFilter } from 'redux/contacts/contacts-selectors';
+
 export const Filter = () => {
   const dispatch = useDispatch();
   const filter = useSelector(getFilter);
 
   const setFilterContact = event =>
-    dispatch(changeFilter(event.currentTarget.value));
+    dispatch(filterContact(event.currentTarget.value));
 
   return (
     <FilterContainer>

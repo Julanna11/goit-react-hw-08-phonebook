@@ -1,24 +1,36 @@
 import PropTypes from 'prop-types';
-import { Button } from 'utilities/button.styled';
 import { ListItem } from 'components/ContactLsit/ContactList.styled';
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/ContactSlice';
+import { deleteContactThunk } from 'redux/contacts/contacts-requests';
+import Button from '@mui/material/Button';
+import { ThemeProvider } from '@mui/system';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { theme } from '../../utilities/button.styled';
 
-export function ContactListItem({ id, name, number }) {
+export function ContactListItem({ contactId, name, number }) {
   const dispatch = useDispatch();
-
-  const removeContact = () => dispatch(deleteContact(id));
+  const infoDelete = { contactId, name };
 
   return (
     <ListItem>
       {name}: {number}
-      <Button type="button" onClick={removeContact}>
-        Delete
-      </Button>
+      <ThemeProvider theme={theme}>
+        <Button
+          sx={{ m: 2 }}
+          color="buttonColor"
+          variant="contained"
+          endIcon={<DeleteIcon />}
+          onClick={() => dispatch(deleteContactThunk(infoDelete))}
+        >
+          Delete
+        </Button>
+      </ThemeProvider>
     </ListItem>
   );
 }
 
 ContactListItem.propTypes = {
-  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+  contactId: PropTypes.string.isRequired,
 };

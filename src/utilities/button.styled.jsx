@@ -1,19 +1,10 @@
-import styled from '@emotion/styled';
+import { createTheme } from '@mui/material/styles';
 
-export const Button = styled.button`
-  display: inline-block;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 4px;
-  margin-left: 10px;
-  text-transform: capitalize;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: transparent;
-
-  &:hover,
-  &:focus {
-    background: lightgreen;
-  }
-`;
+export const theme = createTheme({
+  palette: {
+    buttonColor: {
+      main: '#4caf50',
+      contrastText: '#fff',
+    },
+  },
+});

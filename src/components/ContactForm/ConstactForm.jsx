@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
-import { Input } from './ContactForm.styled';
-import { Button } from 'utilities/button.styled';
-import { addContact } from 'redux/ContactSlice';
-import { useSelector, useDispatch } from 'react-redux';
-import { getContacts } from 'redux/ContactSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContactThunk } from 'redux/contacts/contacts-requests';
+import { getContacts } from 'redux/contacts/contacts-selectors';
+import {
+  FormContainer,
+  Input,
+  InputContainer,
+  LableText,
+} from './ContactForm.styled';
+import Button from '@mui/material/Button';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { ThemeProvider } from '@mui/system';
+import { theme } from '../../utilities/button.styled';
 
-export const Form = () => {
+export default function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -18,15 +25,16 @@ export const Form = () => {
 
   const handleSubmit = evt => {
     evt.preventDefault();
+
     const contact = {
-      id: nanoid(),
       name,
       number,
     };
 
-    contacts.some(e => e.name.toLowerCase() === contact.name.toLowerCase())
-      ? alert(`${name} is already in contacts`)
-      : dispatch(addContact(contact));
+    contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())
+      ? Notify.warning(`${name} is already in contacts`)
+      : dispatch(addContactThunk(contact));
+
     reset();
   };
 
@@ -36,27 +44,50 @@ export const Form = () => {
   };
 
   return (
-    <form autoComplete="off" onSubmit={handleSubmit}>
-      <Input
-        id={nanoid()}
-        type="text"
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        value={name}
-        onChange={changeName}
-        required
-      />
-      <Input
-        type="tel"
-        name="number"
-        pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-        value={number}
-        onChange={changeNumber}
-        required
-      />
-      <Button type="submit">Add Contact</Button>
-    </form>
+    <FormContainer>
+      <form onSubmit={handleSubmit}>
+        <InputContainer>
+          <label>
+            <LableText>Name</LableText>
+            <Input
+              type="text"
+              name="name"
+              value={name}
+              onChange={changeName}
+              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+              required
+              placeholder="Name Surname"
+              autoComplete="off"
+            />
+          </label>
+          <label>
+            <LableText>Number</LableText>
+            <Input
+              type="tel"
+              name="number"
+              value={number}
+              onChange={changeNumber}
+              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+              required
+              placeholder="+380 00 00 000"
+              autoComplete="off"
+            />
+          </label>
+        </InputContainer>
+
+        <ThemeProvider theme={theme}>
+          <Button
+            type="submit"
+            sx={{ ml: 15 }}
+            color="buttonColor"
+            variant="contained"
+          >
+            Add contact
+          </Button>
+        </ThemeProvider>
+      </form>
+    </FormContainer>
   );
-};
+}
